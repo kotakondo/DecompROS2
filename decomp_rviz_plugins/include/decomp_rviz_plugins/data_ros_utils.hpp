@@ -55,6 +55,20 @@ inline vec_Vec3f cloud_to_vec(const sensor_msgs::msg::PointCloud &cloud) {
   return pts;
 }
 
+inline vec_Vec3f cloud_to_vec(const sensor_msgs::msg::PointCloud2::ConstSharedPtr msg) {
+  vec_Vec3f pts;
+
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud =
+    std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+  pcl::fromROSMsg(*msg, *cloud);
+  pts.resize(cloud->points.size());
+  for (unsigned int i = 0; i < cloud->points.size(); i++) {
+    pts[i](0) = cloud->points[i].x;
+    pts[i](1) = cloud->points[i].y;
+    pts[i](2) = cloud->points[i].z;
+  }
+  return pts;
+}
 
 inline vec_Vec3f cloud_to_vec(const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
   vec_Vec3f pts;

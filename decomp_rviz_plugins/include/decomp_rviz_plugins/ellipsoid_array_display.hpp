@@ -5,13 +5,13 @@
 #include <rviz_common/visualization_manager.hpp>
 #include <rviz_common/properties/color_property.hpp>
 #include <rviz_common/properties/float_property.hpp>
-// #include <rviz_common/frame_manager.hpp>
 #include <rviz_common/frame_manager_iface.hpp>
 #include <rviz_common/load_resource.hpp>
 #include <rviz_common/message_filter_display.hpp>
 
 #include <decomp_ros_msgs/msg/ellipsoid_array.hpp>
 #include "ellipsoid_array_visual.hpp"
+
 
 #include <tf2/exceptions.h>
 #include <tf2_ros/transform_listener.h>

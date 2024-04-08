@@ -4,6 +4,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(decomp_rviz_plugins)
 
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wno-deprecated-declarations")
 find_package(ament_cmake REQUIRED)
 find_package(Eigen3 REQUIRED)
@@ -118,9 +119,7 @@ ament_export_dependencies(${PROJECT_NAME}
   rviz_default_plugins
   nav_msgs
   rviz_rendering
-  pcl_conversions
-  moveit_visual_tools
-  moveit_ros)
+  pcl_conversions)
 
 install(TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}

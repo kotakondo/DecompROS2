@@ -28,6 +28,7 @@ class PolyhedronArrayDisplay
         :public rviz_common::RosTopicDisplay<decomp_ros_msgs::msg::PolyhedronArray> {
 public:
   PolyhedronArrayDisplay();
+  void update(float wall_dt, float ros_dt) override;
   virtual ~PolyhedronArrayDisplay();
 
 protected:
@@ -49,6 +50,7 @@ private:
   void processMessage(const decomp_ros_msgs::msg::PolyhedronArray::ConstSharedPtr msg);
   void visualizeBound();
   void visualizeVs();
+  void removeExpiredPoly();
 
   std::shared_ptr<MeshVisual> visual_mesh_;
   std::shared_ptr<BoundVisual> visual_bound_;
@@ -67,6 +69,8 @@ private:
 
   vec_E<vec_Vec3f> vertices_;
   vec_E<std::pair<Vec3f, Vec3f>> vs_;
+  rclcpp::Time expiration_;
+  bool received_data{false};
 };
 
 }

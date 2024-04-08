@@ -116,6 +116,7 @@ class TestPathDecomp3D : public rclcpp::Node
 
       decomp_ros_msgs::msg::PolyhedronArray poly_msg = DecompROS::polyhedron_array_to_ros(decomp_util.get_polyhedrons());
       poly_msg.header.frame_id = "map";
+      poly_msg.lifetime = rclcpp::Duration::from_seconds(3.0);
       poly_pub_->publish(poly_msg);
 
       //Convert to inequality constraints Ax < b

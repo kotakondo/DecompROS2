@@ -36,7 +36,6 @@ PolyhedronArrayDisplay::PolyhedronArrayDisplay() {
   state_property_->addOption("Bound", 1);
   state_property_->addOption("Both", 2);
   state_property_->addOption("Vs", 3);
-
 }
 
 void PolyhedronArrayDisplay::onInitialize() { 
@@ -61,6 +60,8 @@ void PolyhedronArrayDisplay::processMessage(const decomp_ros_msgs::msg::Polyhedr
     return;
   }
 
+  expiration_ = context_->getClock()->now() + msg->lifetime;
+  
   vertices_.clear();
   vs_.clear();
 
@@ -75,6 +76,27 @@ void PolyhedronArrayDisplay::processMessage(const decomp_ros_msgs::msg::Polyhedr
 
   int state = state_property_->getOptionInt();
   visualizeMessage(state);
+  received_data =  true;
+}
+
+
+void PolyhedronArrayDisplay::update(float wall_dt, float ros_dt){
+  (void) wall_dt;
+  (void) ros_dt;
+  removeExpiredPoly();
+}
+
+void PolyhedronArrayDisplay::removeExpiredPoly(){
+  rclcpp::Time current_time = context_->getClock()->now();
+  if(received_data){
+    if( (current_time >= expiration_)){
+        vertices_.clear();
+        vs_.clear();
+        int state = state_property_->getOptionInt();
+        visualizeMessage(state);
+        received_data = false;
+    }
+  }
 }
 
 void PolyhedronArrayDisplay::visualizeMesh() {
