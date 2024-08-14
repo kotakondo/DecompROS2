@@ -31,6 +31,6 @@
 
     Error: rosidl_generator_py.import_type_support_impl.UnsupportedTypeSupport: Could not import 'rosidl_typesupport_c' for package 'decomp_ros_msgs'
 
-    Solution:
+    Solution: (ref: https://github.com/ros2/examples/issues/303)
 
         If you are using Conda, probably it's better to stop using it, and build workspace without it. Also it is suggested using the same python version as ROS2's python version.
