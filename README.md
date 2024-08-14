@@ -14,9 +14,9 @@
     
     ros2 launch decomp_test_node test_decomp_rviz_launch.py
 
-#### Build-related errors and solutions
+#### Errors and solutions
 
-##### Example 1
+##### colcon build failure
 
     Error: Could not find a package configuration file provided by "decomp_util" with any of the following names:
 
@@ -27,3 +27,10 @@
 
         source install/setup.bash
 
+##### rosidl_typesupport_c-related errors
+
+    Error: rosidl_generator_py.import_type_support_impl.UnsupportedTypeSupport: Could not import 'rosidl_typesupport_c' for package 'decomp_ros_msgs'
+
+    Solution:
+
+        If you are using Conda, probably it's better to stop using it, and build workspace without it. Also it is suggested using the same python version as ROS2's python version.

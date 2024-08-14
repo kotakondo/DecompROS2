@@ -6,6 +6,7 @@
 #include <sensor_msgs/msg/point_cloud.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <sensor_msgs/point_cloud2_iterator.hpp>
+#include <decomp_ros_msgs/msg/polyhedron.hpp>
 #include <decomp_ros_msgs/msg/polyhedron_array.hpp>
 #include <decomp_ros_msgs/msg/ellipsoid_array.hpp>
 #include <nav_msgs/msg/path.hpp>
