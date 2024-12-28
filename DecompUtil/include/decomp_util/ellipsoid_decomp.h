@@ -101,6 +101,7 @@ public:
 
     for (unsigned int i = 0; i < N; i++)
     {
+   
       lines_[i] = std::make_shared<LineSegment<Dim>>(path[i], path[i + 1]);
       lines_[i]->set_local_bbox(local_bbox_);
       lines_[i]->set_obs(obs_);
@@ -108,6 +109,7 @@ public:
       lines_[i]->dilate(offset_x);
       ellipsoids_[i] = lines_[i]->get_ellipsoid();
       polyhedrons_[i] = lines_[i]->get_polyhedron();
+
     }
 
     path_ = path;
@@ -117,6 +119,42 @@ public:
       for (auto &it : polyhedrons_)
         add_global_bbox(it);
     }
+
+  }
+
+  /**
+   * @brief Decomposition thread
+   * @param path The path to dilate
+   * @param offset_x offset added to the long semi-axis, default is 0
+   */
+  void dilate(const vec_Vecf<Dim> &path, bool &result, double offset_x = 0)
+  {
+    const unsigned int N = path.size() - 1;
+    lines_.resize(N);
+    ellipsoids_.resize(N);
+    polyhedrons_.resize(N);
+
+    for (unsigned int i = 0; i < N; i++)
+    {
+   
+      lines_[i] = std::make_shared<LineSegment<Dim>>(path[i], path[i + 1]);
+      lines_[i]->set_local_bbox(local_bbox_);
+      lines_[i]->set_obs(obs_);
+      lines_[i]->set_inflate_distance(inflate_distance_);
+      lines_[i]->dilate(offset_x, result);
+      ellipsoids_[i] = lines_[i]->get_ellipsoid();
+      polyhedrons_[i] = lines_[i]->get_polyhedron();
+
+    }
+
+    path_ = path;
+
+    if (global_bbox_min_.norm() != 0 || global_bbox_max_.norm() != 0)
+    {
+      for (auto &it : polyhedrons_)
+        add_global_bbox(it);
+    }
+
   }
 
   void set_inflate_distance(double d)
