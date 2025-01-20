@@ -393,7 +393,7 @@ protected:
   Vecf<Dim> p2_;
 
   double inflate_distance_ = 0;
-  int counter_max_ = 10;
+  int counter_max_ = 50;
 };
 
 typedef LineSegment<2> LineSegment2D;
