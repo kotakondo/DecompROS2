@@ -44,6 +44,13 @@ public:
     local_bbox_ = bbox;
   }
 
+  /// Set the z_min and z_max
+  void set_z_min_and_max(decimal_t z_min, decimal_t z_max)
+  {
+    z_min_ = z_min;
+    z_max_ = z_max;
+  }
+
   /// Get the path that is used for dilation
   vec_Vecf<Dim> get_path() const
   {
@@ -104,6 +111,7 @@ public:
    
       lines_[i] = std::make_shared<LineSegment<Dim>>(path[i], path[i + 1]);
       lines_[i]->set_local_bbox(local_bbox_);
+      lines_[i]->set_z_min_and_max(z_min_, z_max_);
       lines_[i]->set_obs(obs_);
       lines_[i]->set_inflate_distance(inflate_distance_);
       lines_[i]->dilate(offset_x);
@@ -113,6 +121,13 @@ public:
     }
 
     path_ = path;
+
+    // having z_min and z_max
+    if (z_min_ != -std::numeric_limits<decimal_t>::infinity() || z_max_ != std::numeric_limits<decimal_t>::infinity())
+    {
+      for (auto &it : polyhedrons_)
+        add_z_min_and_max(it);
+    }
 
     if (global_bbox_min_.norm() != 0 || global_bbox_max_.norm() != 0)
     {
@@ -139,6 +154,7 @@ public:
    
       lines_[i] = std::make_shared<LineSegment<Dim>>(path[i], path[i + 1]);
       lines_[i]->set_local_bbox(local_bbox_);
+      lines_[i]->set_z_min_and_max(z_min_, z_max_);
       lines_[i]->set_obs(obs_);
       lines_[i]->set_inflate_distance(inflate_distance_);
       lines_[i]->dilate(offset_x, result);
@@ -148,6 +164,13 @@ public:
     }
 
     path_ = path;
+
+    // having z_min and z_max
+    if (z_min_ != -std::numeric_limits<decimal_t>::infinity() || z_max_ != std::numeric_limits<decimal_t>::infinity())
+    {
+      for (auto &it : polyhedrons_)
+        add_z_min_and_max(it);
+    }
 
     if (global_bbox_min_.norm() != 0 || global_bbox_max_.norm() != 0)
     {
@@ -192,6 +215,21 @@ protected:
     Vs.add(Hyperplane3D(Vec3f(0, global_bbox_max_(1), 0), Vec3f(0, -1, 0)));
   }
 
+  template <int U = Dim>
+  typename std::enable_if<U == 2>::type add_z_min_and_max(Polyhedron<Dim> &Vs)
+  {
+    // Do nothing
+  }
+
+  template <int U = Dim>
+  typename std::enable_if<U == 3>::type add_z_min_and_max(Polyhedron<Dim> &Vs)
+  {
+    //**** add bound along X, Y, Z axis
+    //*** Z
+    Vs.add(Hyperplane3D(Vec3f(0, 0, z_max_), Vec3f(0, 0, 1)));
+    Vs.add(Hyperplane3D(Vec3f(0, 0, z_min_), Vec3f(0, 0, -1)));
+  }
+
   vec_Vecf<Dim> path_;
   vec_Vecf<Dim> obs_;
 
@@ -202,6 +240,9 @@ protected:
   Vecf<Dim> local_bbox_{ Vecf<Dim>::Zero() };
   Vecf<Dim> global_bbox_min_{ Vecf<Dim>::Zero() };  // bounding box params
   Vecf<Dim> global_bbox_max_{ Vecf<Dim>::Zero() };
+
+  decimal_t z_min_ = -std::numeric_limits<decimal_t>::infinity();
+  decimal_t z_max_ = std::numeric_limits<decimal_t>::infinity();
 
   double inflate_distance_ = 0;
 };

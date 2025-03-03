@@ -104,6 +104,7 @@ protected:
       dir_v(2) = dir(0) * dir_h(1) - dir(1) * dir_h(0);
       Vecf<Dim> pp5 = p1_ + dir_v * this->local_bbox_(2);
       Vecf<Dim> pp6 = p1_ - dir_v * this->local_bbox_(2);
+
       Vs.add(Hyperplane<Dim>(pp5, dir_v));
       Vs.add(Hyperplane<Dim>(pp6, -dir_v));
     }
@@ -394,6 +395,7 @@ protected:
 
   double inflate_distance_ = 0;
   int counter_max_ = 50;
+
 };
 
 typedef LineSegment<2> LineSegment2D;

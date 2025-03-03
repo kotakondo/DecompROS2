@@ -29,6 +29,11 @@ class DecompBase {
       local_bbox_ = bbox;
     }
 
+    void set_z_min_and_max(decimal_t z_min, decimal_t z_max) {
+      z_min_ = z_min;
+      z_max_ = z_max;
+    }
+
     ///Import obstacle points
     void set_obs(const vec_Vecf<Dim> &obs) {
       // only consider points inside local bbox
@@ -92,5 +97,9 @@ class DecompBase {
 
     /// Local bounding box along the line segment
     Vecf<Dim> local_bbox_{Vecf<Dim>::Zero()};
+
+    /// Z min and max
+    decimal_t z_min_{-std::numeric_limits<decimal_t>::infinity()};
+    decimal_t z_max_{std::numeric_limits<decimal_t>::infinity()};
 };
 #endif
