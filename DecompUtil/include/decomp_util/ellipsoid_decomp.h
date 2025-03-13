@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <decomp_util/line_segment.h>
+#include <chrono>
 
 /**
  * @brief EllipsoidDecomp Class
@@ -149,9 +150,9 @@ public:
     ellipsoids_.resize(N);
     polyhedrons_.resize(N);
 
+    #pragma omp parallel for
     for (unsigned int i = 0; i < N; i++)
     {
-   
       lines_[i] = std::make_shared<LineSegment<Dim>>(path[i], path[i + 1]);
       lines_[i]->set_local_bbox(local_bbox_);
       lines_[i]->set_z_min_and_max(z_min_, z_max_);
@@ -160,7 +161,6 @@ public:
       lines_[i]->dilate(offset_x, result);
       ellipsoids_[i] = lines_[i]->get_ellipsoid();
       polyhedrons_[i] = lines_[i]->get_polyhedron();
-
     }
 
     path_ = path;
