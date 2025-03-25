@@ -94,6 +94,9 @@ typedef Polyhedron<2> Polyhedron2D;
 ///Polyhedron3D, consists of 3D hyperplane
 typedef Polyhedron<3> Polyhedron3D;
 
+// Forward declaration (cal_vertices are defined in geometric_utils.h but geometric_utils.h depends on polygon.h so I cannot cyclically include - but I need to use ca_vertices in polygon.h so I here forward declare it)
+inline vec_E<vec_Vec3f> cal_vertices(const Polyhedron3D &poly);
+
 ///[A, b] for \f$Ax < b\f$
 template <int Dim>
 struct LinearConstraint {
@@ -126,13 +129,61 @@ struct LinearConstraint {
 		b_ = b;
 	}
 
+  LinearConstraint(const Vecf<Dim> p0, const vec_E<Hyperplane<Dim>>& vs, const Polyhedron<Dim>& poly) {
+		const unsigned int size = vs.size();
+		MatDNf<Dim> A(size, Dim);
+		VecDf b(size);
+
+		for (unsigned int i = 0; i < size; i++) {
+			auto n = vs[i].n_;
+			decimal_t c = vs[i].p_.dot(n);
+			if (n.dot(p0) - c > 0) {
+				n = -n;
+				c = -c;
+			}
+			A.row(i) = n;
+			b(i) = c;
+		}
+
+		A_ = A;
+		b_ = b;
+    poly_ = poly;
+	}
+
   /// Check if the point is inside polyhedron using linear constraint
-  bool inside(const Vecf<Dim> &pt) {
+  inline bool inside(const Vecf<Dim> &pt) const {
     VecDf d = A_ * pt - b_;
     for (unsigned int i = 0; i < d.rows(); i++) {
       if (d(i) > 0)
         return false;
     }
+    return true;
+  }
+
+  bool getMeanPoint(Vecf<3>& mean) const {
+    
+    // Use cal_vertices() to get the vertices for each face of the polyhedron.
+    vec_E<vec_Vec3f> polygons = cal_vertices(poly_);
+    
+    // Flatten all vertices into one list.
+    std::vector<Vec3f> vertices;
+    for (const auto &polygon : polygons) {
+      for (const auto &pt : polygon) {
+        vertices.push_back(pt);
+      }
+    }
+    
+    if (vertices.empty()) {
+      return false;
+    }
+    
+    // Compute the arithmetic mean of all vertices.
+    // Vecf<3> mean = Vecf<3>::Zero();
+    for (const auto &pt : vertices) {
+      mean += pt;
+    }
+    mean /= static_cast<decimal_t>(vertices.size());
+    
     return true;
   }
 
@@ -144,6 +195,7 @@ struct LinearConstraint {
 
   MatDNf<Dim> A_;
   VecDf b_;
+  Polyhedron<Dim> poly_;
 };
 
 ///LinearConstraint 2D
