@@ -231,7 +231,10 @@ protected:
   }
 
   vec_Vecf<Dim> path_;
-  vec_Vecf<Dim> obs_;
+  std::vector<
+    Eigen::Matrix<double,Dim,1>,
+    Eigen::aligned_allocator<Eigen::Matrix<double,Dim,1>>
+  > obs_;
 
   vec_E<Ellipsoid<Dim>> ellipsoids_;
   vec_E<Polyhedron<Dim>> polyhedrons_;
